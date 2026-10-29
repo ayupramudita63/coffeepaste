@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "487647661884",
+    "project_id": "coffee-paste-360d5",
+    "storage_bucket": "coffee-paste-360d5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:487647661884:android:4d5f06e334233a2e295839",
+        "android_client_info": {
+          "package_name": "com.coffeepaste.coffee_paste"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "487647661884-u7g4gjokc9rk8908o8g2ncidm1dolbae.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPxKYSarBjZMrlR5u8OVCc12D4sfM6N8Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "487647661884-u7g4gjokc9rk8908o8g2ncidm1dolbae.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
