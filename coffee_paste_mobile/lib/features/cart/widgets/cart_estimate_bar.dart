@@ -22,7 +22,7 @@ class CartEstimateBar extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Icon(
+          Icon(
             Icons.access_time,
             size: 20,
             color: AppColors.primary,

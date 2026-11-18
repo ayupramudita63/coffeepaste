@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../providers/language_provider.dart';
+import '../../core/theme/app_style.dart';
 
 class LanguageScreen extends StatelessWidget {
   const LanguageScreen({super.key});
@@ -23,8 +24,8 @@ class LanguageScreen extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () => Navigator.of(context).maybePop(),
-                  child: const Icon(
-                    Icons.arrow_back,
+                  child: Icon(
+                    Icons.arrow_back_ios_new_rounded,
                     color: AppColors.primary,
                     size: 24,
                   ),
@@ -108,12 +109,11 @@ class _LanguageTile extends StatelessWidget {
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppStyle.cardRadius),
+          boxShadow: AppStyle.softShadow,
           border: Border.all(
-            color: isSelected
-                ? AppColors.primary
-                : AppColors.border,
-            width: isSelected ? 1.5 : 1,
+            color: isSelected ? AppColors.primary : Colors.transparent,
+            width: 1.5,
           ),
         ),
         child: Row(
@@ -122,7 +122,7 @@ class _LanguageTile extends StatelessWidget {
               width: 40,
               height: 40,
               alignment: Alignment.center,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: AppColors.surfaceMuted,
                 shape: BoxShape.circle,
               ),

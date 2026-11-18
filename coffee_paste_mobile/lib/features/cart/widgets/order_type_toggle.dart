@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/theme/app_style.dart';
 
-/// Pilihan "Pick Up" / "Dine In".
+/// Pilihan "Take Away" / "Dine In".
 class OrderTypeToggle extends StatelessWidget {
-  final bool isPickUp;
+  final bool isTakeAway;
   final ValueChanged<bool> onChanged;
 
   const OrderTypeToggle({
     super.key,
-    required this.isPickUp,
+    required this.isTakeAway,
     required this.onChanged,
   });
 
@@ -19,22 +20,19 @@ class OrderTypeToggle extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: AppColors.authBackground,
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(
-          color: AppColors.border,
-        ),
+        color: AppColors.inputBackground,
+        borderRadius: BorderRadius.circular(AppStyle.innerRadius),
       ),
       child: Row(
         children: [
           _Segment(
-            label: 'Pick Up',
-            selected: isPickUp,
+            label: 'Take Away',
+            selected: isTakeAway,
             onTap: () => onChanged(true),
           ),
           _Segment(
             label: 'Dine In',
-            selected: !isPickUp,
+            selected: !isTakeAway,
             onTap: () => onChanged(false),
           ),
         ],
@@ -62,11 +60,11 @@ class _Segment extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(
-            vertical: 14,
+            vertical: 13,
           ),
           decoration: BoxDecoration(
             color: selected ? AppColors.primary : Colors.transparent,
-            borderRadius: BorderRadius.circular(26),
+            borderRadius: BorderRadius.circular(AppStyle.innerRadius - 3),
           ),
           child: Center(
             child: Text(
@@ -75,7 +73,7 @@ class _Segment extends StatelessWidget {
                 fontSize: 15,
                 color: selected
                     ? AppColors.textOnPrimary
-                    : AppColors.primary,
+                    : AppColors.textSecondary,
               ),
             ),
           ),

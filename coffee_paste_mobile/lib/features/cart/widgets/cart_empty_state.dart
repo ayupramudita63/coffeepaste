@@ -21,7 +21,7 @@ class CartEmptyState extends StatelessWidget {
               color: AppColors.primary.withOpacity(0.1),
               shape: BoxShape.circle,
             ),
-            child: const Center(
+            child: Center(
               child: HugeIcon(
                 icon: HugeIcons.strokeRoundedShoppingCart01,
                 size: 40,
@@ -51,7 +51,7 @@ class CartEmptyState extends StatelessWidget {
                 vertical: 14,
               ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(16),
               ),
               elevation: 0,
             ),

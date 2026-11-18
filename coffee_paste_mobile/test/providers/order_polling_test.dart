@@ -151,43 +151,6 @@ void main() {
     });
   });
 
-  group('pemicu notifikasi', () {
-    test('memanggil listener dengan data lama & baru saat status berubah', () {
-      fakeAsync((async) {
-        final repo =
-            FakeOrderRepository([sampleOrder('#CP1', OrderStatus.received)]);
-        final seen = <String>[];
-        final provider = OrderProvider(
-          repo,
-          onOrdersChanged: (previous, next) => seen.add(
-              '${previous.map((o) => o.status.name).join(',')}->'
-              '${next.map((o) => o.status.name).join(',')}'),
-        );
-
-        // Muat awal: daftar lama masih kosong (jadi baseline, bukan perubahan).
-        provider.loadOrders();
-        async.flushMicrotasks();
-        expect(seen, ['->received']);
-
-        repo.next = [sampleOrder('#CP1', OrderStatus.preparing)];
-        provider.refreshSilently();
-        async.flushMicrotasks();
-        expect(seen.last, 'received->preparing');
-
-        // Data sama -> listener tidak dipanggil lagi.
-        final calls = seen.length;
-        provider.refreshSilently();
-        async.flushMicrotasks();
-        expect(seen, hasLength(calls));
-
-        // Perubahan lokal (membatalkan) bukan datang dari server: tidak memicu.
-        provider.cancelOrder('#CP1').then((_) {});
-        async.flushMicrotasks();
-        expect(seen, hasLength(calls));
-      });
-    });
-  });
-
   group('ulasan per produk', () {
     test('berhasil: produk yang diulas tidak muncul lagi di daftar ulasan', () {
       fakeAsync((async) {

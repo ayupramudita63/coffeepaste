@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:coffee_paste/core/router/app_router.dart';
 import 'package:coffee_paste/core/theme/app_colors.dart';
+import 'package:coffee_paste/core/theme/app_style.dart';
 import 'package:coffee_paste/core/theme/app_text_styles.dart';
 import 'package:coffee_paste/shared/models/product_model.dart';
 import 'package:coffee_paste/shared/widgets/cart_icon_button.dart';
@@ -46,11 +47,11 @@ class ProductListScreen extends StatelessWidget {
                         child: Container(
                           width: 44,
                           height: 44,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             color: AppColors.surface,
                             shape: BoxShape.circle,
                           ),
-                          child: const Center(
+                          child: Center(
                             child: HugeIcon(
                               icon: HugeIcons.strokeRoundedArrowLeft01,
                               size: 18,
@@ -62,7 +63,11 @@ class ProductListScreen extends StatelessWidget {
                     ),
                     Text(
                       title,
-                      style: AppTextStyles.sectionTitle.copyWith(fontSize: 22),
+                      style: AppTextStyles.sectionTitle.copyWith(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: -0.3,
+                      ),
                     ),
                     const Align(
                       alignment: Alignment.centerRight,
@@ -83,13 +88,18 @@ class ProductListScreen extends StatelessWidget {
                       ),
                     )
                   : GridView.builder(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                      padding: const EdgeInsets.fromLTRB(
+                        AppStyle.screenPadding,
+                        0,
+                        AppStyle.screenPadding,
+                        24,
+                      ),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 0.68,
+                        crossAxisSpacing: AppStyle.gap,
+                        mainAxisSpacing: AppStyle.gap,
+                        childAspectRatio: AppStyle.productGridAspect,
                       ),
                       itemCount: products.length,
                       itemBuilder: (context, index) {

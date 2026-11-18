@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -23,11 +25,24 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String _searchQuery = '';
+  Timer? _searchDebounce;
 
+  // Tunggu sebentar setelah berhenti mengetik supaya halaman tidak dibangun
+  // ulang di setiap huruf.
   void _onSearchChanged(String value) {
-    setState(() {
-      _searchQuery = value.trim().toLowerCase();
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 250), () {
+      if (!mounted) return;
+      setState(() {
+        _searchQuery = value.trim().toLowerCase();
+      });
     });
+  }
+
+  @override
+  void dispose() {
+    _searchDebounce?.cancel();
+    super.dispose();
   }
 
   void _openProductList(String title, List<ProductModel> products) {
@@ -56,13 +71,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Container(
       color: AppColors.background,
+      // Bagian atas tidak diberi SafeArea: foto header menempel ke atas layar.
       child: SafeArea(
+        top: false,
         child: RefreshIndicator(
           color: AppColors.primary,
           onRefresh: menu.loadMenu,
           child: ListView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 100),
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
             children: [
               const HomeHeaderCard(),
               const SizedBox(height: 14),
@@ -85,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 24),
                 if (menu.isLoading && !menu.hasData)
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.symmetric(vertical: 48),
                     child: Center(
                       child: CircularProgressIndicator(

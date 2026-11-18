@@ -63,7 +63,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.of(context).maybePop(),
-                    child: const Icon(Icons.arrow_back,
+                    child: Icon(Icons.arrow_back_ios_new_rounded,
                         color: AppColors.primary, size: 24),
                   ),
                   const SizedBox(width: 12),
@@ -120,7 +120,7 @@ class _ReceiptScreenState extends State<ReceiptScreen> {
                 backgroundColor: AppColors.primary,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 elevation: 0,
               ),

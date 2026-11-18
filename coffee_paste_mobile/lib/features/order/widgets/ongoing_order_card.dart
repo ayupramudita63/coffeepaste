@@ -8,6 +8,7 @@ import 'order_pill.dart';
 import 'order_product_tile.dart';
 import 'order_progress_bar.dart';
 import 'order_total_row.dart';
+import '../../../core/theme/app_style.dart';
 
 /// Kartu pesanan pada tab "Sedang Berlangsung".
 class OngoingOrderCard extends StatelessWidget {
@@ -33,19 +34,9 @@ class OngoingOrderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+      margin: const EdgeInsets.only(bottom: AppStyle.gap + 4),
+      padding: const EdgeInsets.all(AppStyle.cardPadding),
+      decoration: AppStyle.card(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -175,55 +166,67 @@ class _Actions extends StatelessWidget {
   Widget build(BuildContext context) {
     final isQris = order.paymentMethod == PaymentMethod.qris;
 
-    return Wrap(
-      alignment: WrapAlignment.end,
-      spacing: 8,
-      runSpacing: 8,
+    final shape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(AppStyle.innerRadius),
+    );
+    const size = Size(0, 46);
+
+    Widget label(String text) => FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(text, maxLines: 1, softWrap: false),
+        );
+
+    final buttons = <Widget>[
+      if (order.canCancel)
+        OutlinedButton(
+          key: const Key('cancel-button'),
+          onPressed: onCancel,
+          style: OutlinedButton.styleFrom(
+            foregroundColor: AppColors.favorite,
+            side: BorderSide(color: AppColors.favorite.withOpacity(0.45)),
+            minimumSize: size,
+            shape: shape,
+          ),
+          child: label('Batalkan'),
+        ),
+      if (!order.paid)
+        FilledButton.icon(
+          key: const Key('pay-button'),
+          onPressed: onPay,
+          icon: Icon(
+            isQris ? Icons.qr_code_2 : Icons.payments_outlined,
+            size: 18,
+          ),
+          label: label(isQris ? 'Bayar / Lihat QR' : 'Cara Bayar'),
+          style: FilledButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            foregroundColor: Colors.white,
+            minimumSize: size,
+            shape: shape,
+          ),
+        )
+      else
+        FilledButton.icon(
+          key: const Key('receipt-button'),
+          onPressed: onReceipt,
+          icon: const Icon(Icons.receipt_long_outlined, size: 18),
+          label: label('Lihat Struk'),
+          style: FilledButton.styleFrom(
+            backgroundColor: AppColors.primary,
+            foregroundColor: Colors.white,
+            minimumSize: size,
+            shape: shape,
+          ),
+        ),
+    ];
+
+    // Semua tombol berbagi lebar sama, jadi baris selalu simetris.
+    return Row(
       children: [
-        if (order.canCancel)
-          OutlinedButton(
-            key: const Key('cancel-button'),
-            onPressed: onCancel,
-            style: OutlinedButton.styleFrom(
-              foregroundColor: Colors.red.shade600,
-              side: BorderSide(color: Colors.red.shade300),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(22),
-              ),
-            ),
-            child: const Text('Batalkan'),
-          ),
-        if (!order.paid)
-          FilledButton.icon(
-            key: const Key('pay-button'),
-            onPressed: onPay,
-            icon: Icon(
-              isQris ? Icons.qr_code_2 : Icons.payments_outlined,
-              size: 18,
-            ),
-            label: Text(isQris ? 'Bayar / Lihat QR' : 'Cara Bayar'),
-            style: FilledButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(22),
-              ),
-            ),
-          )
-        else
-          FilledButton.icon(
-            key: const Key('receipt-button'),
-            onPressed: onReceipt,
-            icon: const Icon(Icons.receipt_long_outlined, size: 18),
-            label: const Text('Lihat Struk'),
-            style: FilledButton.styleFrom(
-              backgroundColor: AppColors.primary,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(22),
-              ),
-            ),
-          ),
+        for (var i = 0; i < buttons.length; i++) ...[
+          if (i > 0) const SizedBox(width: 10),
+          Expanded(child: buttons[i]),
+        ],
       ],
     );
   }
@@ -238,10 +241,10 @@ class _ItemsBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(AppStyle.cardPadding - 4),
       decoration: BoxDecoration(
         color: AppColors.background,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(AppStyle.innerRadius + 2),
       ),
       child: Column(
         children: [

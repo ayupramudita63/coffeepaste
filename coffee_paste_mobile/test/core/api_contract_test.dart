@@ -16,9 +16,24 @@ void main() {
   });
 
   test('tipe pesanan dikirim sebagai Dine In / Take Away', () {
-    expect(OrderModel.orderTypeToApi('Pick Up'), 'Take Away');
+    expect(OrderModel.orderTypeToApi('Take Away'), 'Take Away');
     expect(OrderModel.orderTypeToApi('Dine In'), 'Dine In');
-    expect(OrderModel.orderTypeLabel('Take Away'), 'Pick Up');
+    expect(OrderModel.orderTypeLabel('Take Away'), 'Take Away');
+  });
+
+  test('lupa password OTP memakai endpoint baru, bukan endpoint tautan milik web',
+      () {
+    expect(ApiEndpoints.forgotPasswordOtp, '/auth/forgot-password/otp');
+    expect(ApiEndpoints.verifyPasswordOtp, '/auth/forgot-password/otp/verify');
+    expect(ApiEndpoints.resetPasswordOtp, '/auth/reset-password/otp');
+    for (final path in [
+      ApiEndpoints.forgotPasswordOtp,
+      ApiEndpoints.verifyPasswordOtp,
+      ApiEndpoints.resetPasswordOtp,
+    ]) {
+      expect(path, isNot('/auth/forgot-password'));
+      expect(path, isNot('/auth/reset-password'));
+    }
   });
 
   test('ID pesanan "#CP00001" di-encode pada URL batal', () {
@@ -79,7 +94,7 @@ void main() {
     });
     expect(o.id, '#CP00007');
     expect(o.orderNumber, '#CP00007');
-    expect(o.orderType, 'Pick Up');
+    expect(o.orderType, 'Take Away');
     expect(o.status, OrderStatus.received);
     expect(o.isOngoing, isTrue);
     expect(o.total, 54390);

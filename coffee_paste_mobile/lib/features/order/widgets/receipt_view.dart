@@ -34,11 +34,11 @@ class ReceiptView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
+            Text(
               'COFFEE PASTE',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: AppColors.primary,
+                color: AppColors.brand,
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 1.5,
@@ -56,13 +56,13 @@ class ReceiptView extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.brand.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Text(
+                child: Text(
                   'LUNAS',
                   style: TextStyle(
-                    color: AppColors.primary,
+                    color: AppColors.brand,
                     fontWeight: FontWeight.w800,
                     fontSize: 13,
                     letterSpacing: 1,
@@ -166,7 +166,7 @@ class ReceiptView extends StatelessWidget {
 
   Widget _amount(String label, int value, {bool bold = false}) {
     final style = TextStyle(
-      color: bold ? AppColors.primary : _ink,
+      color: bold ? AppColors.brand : _ink,
       fontSize: bold ? 17 : 14,
       fontWeight: bold ? FontWeight.w800 : FontWeight.w500,
     );

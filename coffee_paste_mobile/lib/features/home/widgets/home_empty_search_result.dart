@@ -27,11 +27,11 @@ class HomeEmptySearchResult extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 4),
-            const Text(
+            Text(
               'Coba kata kunci lainnya.',
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.grey,
+                color: AppColors.textMuted,
               ),
             ),
           ],

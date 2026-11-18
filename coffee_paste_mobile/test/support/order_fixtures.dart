@@ -11,17 +11,15 @@ OrderModel sampleOrder(
   String id,
   OrderStatus status, {
   Set<String> reviewed = const {},
-  bool paid = false,
 }) {
   return OrderModel(
     id: id,
     orderNumber: id,
     date: DateTime(2026, 10, 10, 9, 30),
-    orderType: 'Pick Up',
+    orderType: 'Take Away',
     status: status,
     total: 40000,
     reviewedItemIds: reviewed,
-    paid: paid,
     items: const [
       OrderItem(
         name: 'Latte',

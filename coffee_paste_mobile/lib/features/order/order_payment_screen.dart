@@ -112,7 +112,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
                 children: [
                   GestureDetector(
                     onTap: _openOrdersTab,
-                    child: const Icon(Icons.arrow_back,
+                    child: Icon(Icons.arrow_back_ios_new_rounded,
                         color: AppColors.primary, size: 24),
                   ),
                   const SizedBox(width: 12),
@@ -185,7 +185,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
               side: BorderSide(color: Colors.red.shade300),
               padding: const EdgeInsets.symmetric(vertical: 14),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(16),
               ),
             ),
             child: const Text('Batalkan Pesanan'),
@@ -236,7 +236,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(20),
           ),
           child: Column(
             children: [
@@ -284,10 +284,10 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
 
   Widget _cashSection(OrderModel order) {
     return Container(
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
         children: [
@@ -298,7 +298,7 @@ class _OrderPaymentScreenState extends State<OrderPaymentScreen> {
               color: AppColors.primary.withOpacity(0.1),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.payments_outlined,
+            child: Icon(Icons.payments_outlined,
                 size: 32, color: AppColors.primary),
           ),
           const SizedBox(height: 14),
@@ -365,10 +365,10 @@ class _StatusCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(22),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
         children: [
@@ -415,7 +415,7 @@ class _PrimaryButton extends StatelessWidget {
           backgroundColor: AppColors.primary,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
+            borderRadius: BorderRadius.circular(16),
           ),
           elevation: 0,
         ),

@@ -20,8 +20,8 @@ class AboutScreen extends StatelessWidget {
                   child: Container(
                     width: 40,
                     height: 40,
-                    decoration: const BoxDecoration(color: AppColors.surface, shape: BoxShape.circle),
-                    child: const Icon(Icons.arrow_back, color: AppColors.primary, size: 20),
+                    decoration: BoxDecoration(color: AppColors.surface, shape: BoxShape.circle),
+                    child: Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.primary, size: 20),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -42,7 +42,7 @@ class AboutScreen extends StatelessWidget {
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Container(
                     color: AppColors.surfaceMuted,
-                    child: const Icon(Icons.local_cafe, size: 48, color: AppColors.primary),
+                    child: Icon(Icons.local_cafe, size: 48, color: AppColors.primary),
                   ),
                 ),
               ),

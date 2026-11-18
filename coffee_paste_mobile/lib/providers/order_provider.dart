@@ -7,13 +7,6 @@ import '../features/order/models/order_model.dart';
 import '../features/order/models/product_review_draft.dart';
 import 'base_provider.dart';
 
-/// Pemicu notifikasi lokal: daftar pesanan lama vs. daftar pesanan terbaru
-/// dari server.
-typedef OrdersChangedListener = void Function(
-  List<OrderModel> previous,
-  List<OrderModel> next,
-);
-
 /// [status] = status memuat daftar pesanan.
 /// [isSubmitting] / [submitError] = status membuat atau membatalkan pesanan.
 class OrderProvider extends BaseProvider {
@@ -22,12 +15,7 @@ class OrderProvider extends BaseProvider {
 
   final OrderRepository _repository;
 
-  /// Dipanggil setiap daftar pesanan dari server diganti (bukan perubahan lokal
-  /// seperti membuat/membatalkan pesanan). Dipakai untuk memicu notifikasi
-  /// lokal saat status atau pembayaran berubah.
-  final OrdersChangedListener? onOrdersChanged;
-
-  OrderProvider(this._repository, {this.onOrdersChanged});
+  OrderProvider(this._repository);
 
   List<OrderModel> _orders = const [];
   bool _isSubmitting = false;
@@ -81,13 +69,7 @@ class OrderProvider extends BaseProvider {
 
   /// Memuat ulang pesanan tanpa loading. Kegagalan diabaikan (data lama dipakai);
   /// listener baru diberi tahu bila datanya benar-benar berubah.
-  ///
-  /// [notify] = false dipakai saat kembali dari background dan push server
-  /// sudah menampilkan perubahannya sendiri, supaya tidak ada notifikasi ganda.
-  Future<void> refreshSilently({
-    bool onlyIfOngoing = false,
-    bool notify = true,
-  }) async {
+  Future<void> refreshSilently({bool onlyIfOngoing = false}) async {
     if (isLoading || _isRefreshing || _isSubmitting) return;
     if (onlyIfOngoing && !_orders.any((order) => order.isOngoing)) return;
 
@@ -97,10 +79,8 @@ class OrderProvider extends BaseProvider {
       final fresh = await _repository.fetchOrders();
       if (epoch != _epoch || _isSubmitting) return;
       if (_signature(fresh) != _signature(_orders)) {
-        final previous = _orders;
         _orders = fresh;
         notifyListeners();
-        if (notify) onOrdersChanged?.call(previous, fresh);
       }
     } catch (_) {
       // Jaringan putus sesaat: coba lagi pada putaran berikutnya.
@@ -119,10 +99,8 @@ class OrderProvider extends BaseProvider {
     setLoading();
 
     try {
-      final previous = _orders;
       _orders = await _repository.fetchOrders();
       setSuccess();
-      onOrdersChanged?.call(previous, _orders);
     } catch (error) {
       setError(error);
     }

@@ -1,6 +1,9 @@
+import 'package:coffee_paste/core/config/app_config.dart';
 import 'package:coffee_paste/core/router/app_router.dart';
 import 'package:coffee_paste/core/storage/token_storage.dart';
 import 'package:coffee_paste/features/account/account_screen.dart';
+import 'package:coffee_paste/features/auth/data/auth_mock_repository.dart';
+import 'package:coffee_paste/features/auth/forgot_password_screen.dart';
 import 'package:coffee_paste/features/auth/login_screen.dart';
 import 'package:coffee_paste/features/cart/cart_screen.dart';
 import 'package:coffee_paste/features/main_navigation/main_navigation_screen.dart';
@@ -132,5 +135,98 @@ void main() {
     expect(find.byType(MainNavigationScreen), findsNothing);
     expect(await storage.readToken(), isNull);
     expect(await storage.readUser(), isNull);
+  });
+
+  Finder fieldIn(String key) => find.descendant(
+        of: find.byKey(Key(key)),
+        matching: find.byType(TextField),
+      );
+
+  Future<void> openForgotPassword(WidgetTester tester) async {
+    await tester.ensureVisible(find.text('Lupa Password?'));
+    await tester.tap(find.text('Lupa Password?'));
+    await tester.pumpAndSettle();
+    expect(find.byType(ForgotPasswordScreen), findsOneWidget);
+  }
+
+  testWidgets('lupa password: email -> OTP -> password baru -> login',
+      (tester) async {
+    final storage = InMemoryTokenStorage();
+    await pumpCoffeePaste(tester, storage: storage);
+    await passSplash(tester);
+    await openForgotPassword(tester);
+
+    // Langkah 1: email
+    await tester.enterText(fieldIn('forgot-email'), AppConfig.demoEmail);
+    await tester.tap(find.byKey(const Key('forgot-send-otp')));
+    await tester.pumpAndSettle();
+    expect(find.text('Masukkan Kode OTP'), findsOneWidget);
+
+    // Langkah 2: OTP (kirim ulang masih dikunci selama hitung mundur)
+    expect(
+      tester.widget<TextButton>(find.byKey(const Key('forgot-resend'))).onPressed,
+      isNull,
+    );
+    await tester.enterText(fieldIn('forgot-otp'), MockAuthRepository.demoOtp);
+    await tester.tap(find.byKey(const Key('forgot-verify-otp')));
+    await tester.pumpAndSettle();
+    expect(find.text('Password Baru'), findsOneWidget);
+
+    // Langkah 3: password baru yang lemah ditolak, yang kuat diterima
+    await tester.enterText(fieldIn('forgot-new-password'), 'lemah');
+    await tester.enterText(fieldIn('forgot-confirm-password'), 'lemah');
+    await tester.tap(find.byKey(const Key('forgot-save-password')));
+    await tester.pumpAndSettle();
+    expect(find.byType(ForgotPasswordScreen), findsOneWidget);
+
+    await tester.enterText(fieldIn('forgot-new-password'), 'PasswordBaru1');
+    await tester.enterText(fieldIn('forgot-confirm-password'), 'PasswordBaru1');
+    await tester.tap(find.byKey(const Key('forgot-save-password')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 600));
+
+    // Langsung ke login, dan kotak pesan sukses masih tampil di atasnya.
+    expect(find.byType(LoginScreen), findsOneWidget);
+    expect(
+      find.text('Password berhasil diubah. Silakan masuk dengan password baru.'),
+      findsOneWidget,
+    );
+    await tester.pumpAndSettle(); // tunggu kotak pesan hilang sendiri
+    expect(
+      find.text('Password berhasil diubah. Silakan masuk dengan password baru.'),
+      findsNothing,
+    );
+    await tester.enterText(find.byType(TextField).at(1), 'PasswordBaru1');
+    await tester.tap(find.text('Masuk'));
+    await tester.pumpAndSettle();
+    expect(find.byType(MainNavigationScreen), findsOneWidget);
+  });
+
+  testWidgets('lupa password: kode OTP salah tidak lanjut ke password baru',
+      (tester) async {
+    await pumpCoffeePaste(tester, storage: InMemoryTokenStorage());
+    await passSplash(tester);
+    await openForgotPassword(tester);
+
+    await tester.enterText(fieldIn('forgot-email'), AppConfig.demoEmail);
+    await tester.tap(find.byKey(const Key('forgot-send-otp')));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(fieldIn('forgot-otp'), '000000');
+    await tester.tap(find.byKey(const Key('forgot-verify-otp')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 600));
+
+    expect(find.text('Kode OTP salah atau sudah kedaluwarsa'), findsOneWidget);
+    expect(find.text('Masukkan Kode OTP'), findsOneWidget);
+    expect(find.text('Password Baru'), findsNothing);
+
+    // Tombol kembali: OTP -> email -> login
+    await tester.tap(find.byKey(const Key('forgot-back')));
+    await tester.pumpAndSettle();
+    expect(find.text('Lupa Password?'), findsWidgets);
+    await tester.tap(find.byKey(const Key('forgot-back')));
+    await tester.pumpAndSettle();
+    expect(find.byType(LoginScreen), findsOneWidget);
   });
 }

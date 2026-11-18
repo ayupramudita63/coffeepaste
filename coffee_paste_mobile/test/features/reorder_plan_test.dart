@@ -93,7 +93,7 @@ void main() {
       id: '#CP1',
       orderNumber: '#CP1',
       date: DateTime(2026, 10, 10),
-      orderType: 'Pick Up',
+      orderType: 'Take Away',
       status: OrderStatus.completed,
       total: 0,
       items: const [
@@ -111,7 +111,7 @@ void main() {
       id: '#CP1',
       orderNumber: '#CP1',
       date: DateTime(2026, 10, 10),
-      orderType: 'Pick Up',
+      orderType: 'Take Away',
       status: OrderStatus.completed,
       total: 0,
       items: const [

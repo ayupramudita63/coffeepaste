@@ -4,36 +4,37 @@ import 'package:provider/provider.dart';
 
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_style.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../providers/auth_provider.dart';
-import '../../providers/language_provider.dart';
+import '../../providers/theme_provider.dart';
+import 'appearance_screen.dart';
 import '../../providers/user_provider.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({super.key});
 
   Future<void> _onLogoutTap(BuildContext context) async {
-    final language = context.read<LanguageProvider>();
     final auth = context.read<AuthProvider>();
 
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text(language.text(id: 'Keluar?', en: 'Log out?')),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppStyle.cardRadius),
+        ),
+        title: Text('Keluar?'),
         content: Text(
-          language.text(
-            id: 'Kamu perlu masuk lagi untuk memakai aplikasi.',
-            en: 'You will need to sign in again to use the app.',
-          ),
+          'Kamu perlu masuk lagi untuk memakai aplikasi.',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(false),
-            child: Text(language.text(id: 'Batal', en: 'Cancel')),
+            child: Text('Batal'),
           ),
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(true),
-            child: Text(language.text(id: 'Keluar', en: 'Log out')),
+            child: Text('Keluar'),
           ),
         ],
       ),
@@ -45,56 +46,48 @@ class AccountScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final language = context.watch<LanguageProvider>();
     final profile = context.watch<UserProvider>();
+    final theme = context.watch<ThemeProvider>();
 
     return Container(
       color: AppColors.authBackground,
       child: SafeArea(
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          padding: const EdgeInsets.fromLTRB(
+            AppStyle.screenPadding,
+            14,
+            AppStyle.screenPadding,
+            24,
+          ),
           children: [
-            // Header
+            // Judul besar ala iOS
             SizedBox(
-  height: 32,
-  child: Stack(
-    alignment: Alignment.center,
-    children: [
-      // Judul Profil di tengah
-      Center(
-        child: Text(
-          language.text(
-            id: 'Profil',
-            en: 'Profile',
-          ),
-          style: AppTextStyles.greetingTitle.copyWith(
-            fontSize: 28,
-            color: AppColors.primary,
-          ),
-        ),
-      ),
-    
-    ],
-  ),
-),
+              height: 44,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Profil',
+                  style: AppTextStyles.greetingTitle.copyWith(
+                    fontSize: 32,
+                    letterSpacing: -0.6,
+                  ),
+                ),
+              ),
+            ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
 
             // Kartu profil
             Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.border),
-              ),
+              padding: const EdgeInsets.all(AppStyle.cardPadding),
+              decoration: AppStyle.card(),
               child: Row(
                 children: [
                   Container(
-                    width: 56,
-                    height: 56,
+                    width: 60,
+                    height: 60,
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
+                      color: AppColors.primaryLight,
                       shape: BoxShape.circle,
                       image: profile.avatarFile != null
                           ? DecorationImage(
@@ -104,9 +97,9 @@ class AccountScreen extends StatelessWidget {
                           : null,
                     ),
                     child: profile.avatarFile == null
-                        ? const Icon(
-                            Icons.person,
-                            size: 32,
+                        ? Icon(
+                            Icons.person_rounded,
+                            size: 34,
                             color: AppColors.primary,
                           )
                         : null,
@@ -118,13 +111,17 @@ class AccountScreen extends StatelessWidget {
                       children: [
                         Text(
                           profile.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.productName.copyWith(
-                            fontSize: 16,
+                            fontSize: 17,
                           ),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           profile.email,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.ratingText,
                         ),
                       ],
@@ -134,114 +131,64 @@ class AccountScreen extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 20),
-
-            // Informasi Akun
-            _AccountMenuTile(
-              icon: Icons.person_outline,
-              title: language.text(
-                id: 'Informasi Akun',
-                en: 'Account Information',
-              ),
-              subtitle: language.text(
-                id: 'Kelola data diri dan akunmu',
-                en: 'Manage your personal and account information',
-              ),
-              onTap: () {
-                context.push(AppRoutes.accountInfo);
-              },
-            ),
-
-            const SizedBox(height: 12),
-
-            // Bahasa
-            _AccountMenuTile(
-              icon: Icons.language,
-              title: language.text(
-                id: 'Bahasa',
-                en: 'Language',
-              ),
-              subtitle: language.text(
-                id: 'Pilih bahasa aplikasi',
-                en: 'Choose app language',
-              ),
-              onTap: () {
-                context.push(AppRoutes.language);
-              },
-            ),
-
-            const SizedBox(height: 12),
-
-            // Notifikasi
-            _AccountMenuTile(
-              icon: Icons.notifications_none,
-              title: language.text(
-                id: 'Notifikasi',
-                en: 'Notifications',
-              ),
-              subtitle: language.text(
-                id: 'Pengaturan notifikasi',
-                en: 'Notification settings',
-              ),
-              onTap: () {
-                context.push(AppRoutes.notifications);
-              },
-            ),
-
-            const SizedBox(height: 12),
-
-            // Ganti Password
-            _AccountMenuTile(
-              icon: Icons.lock_outline,
-              title: language.text(
-                id: 'Ganti Password',
-                en: 'Change Password',
-              ),
-              subtitle: language.text(
-                id: 'Ubah kata sandi akun',
-                en: 'Change your account password',
-              ),
-              onTap: () {
-                context.push(AppRoutes.changePassword);
-              },
-            ),
-
-            const SizedBox(height: 12),
-
-            // Tentang Coffee Paste
-            _AccountMenuTile(
-              icon: Icons.info_outline,
-              title: language.text(
-                id: 'Tentang Coffee Paste',
-                en: 'About Coffee Paste',
-              ),
-              subtitle: language.text(
-                id: 'Kenali lebih dekat Coffee Paste',
-                en: 'Learn more about Coffee Paste',
-              ),
-              onTap: () {
-                context.push(AppRoutes.about);
-              },
-            ),
-
             const SizedBox(height: 24),
 
-            // Keluar
-            OutlinedButton.icon(
-              onPressed: () => _onLogoutTap(context),
-              icon: const Icon(Icons.logout, color: AppColors.favorite),
-              label: Text(
-                language.text(id: 'Keluar', en: 'Log out'),
-                style: AppTextStyles.productName.copyWith(
-                  color: AppColors.favorite,
+            // Grup pengaturan akun
+            _SettingsGroup(
+              children: [
+                _SettingsRow(
+                  icon: Icons.person_rounded,
+                  title: 'Informasi Akun',
+                  onTap: () => context.push(AppRoutes.accountInfo),
                 ),
-              ),
-              style: OutlinedButton.styleFrom(
-                backgroundColor: AppColors.surface,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                side: const BorderSide(color: AppColors.border),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                _SettingsRow(
+                  icon: Icons.notifications_rounded,
+                  title: 'Notifikasi',
+                  onTap: () => context.push(AppRoutes.notifications),
+                ),
+                _SettingsRow(
+                  icon: Icons.palette_rounded,
+                  title: 'Tampilan',
+                  value: AppearanceScreen.labelOf(theme.mode),
+                  valueDotColor: theme.accent,
+                  onTap: () => context.push(AppRoutes.appearance),
+                ),
+                _SettingsRow(
+                  icon: Icons.lock_rounded,
+                  title: 'Ganti Password',
+                  onTap: () => context.push(AppRoutes.changePassword),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 20),
+
+            _SettingsGroup(
+              children: [
+                _SettingsRow(
+                  icon: Icons.info_rounded,
+                  title: 'Tentang Coffee Paste',
+                  onTap: () => context.push(AppRoutes.about),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 20),
+
+            // Keluar
+            GestureDetector(
+              onTap: () => _onLogoutTap(context),
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                height: 52,
+                alignment: Alignment.center,
+                decoration: AppStyle.card(),
+                child: Text(
+                  'Keluar',
+                  style: AppTextStyles.productName.copyWith(
+                    fontSize: 15,
+                    color: AppColors.favorite,
+                  ),
                 ),
               ),
             ),
@@ -252,70 +199,99 @@ class AccountScreen extends StatelessWidget {
   }
 }
 
-class _AccountMenuTile extends StatelessWidget {
+/// Satu kartu berisi beberapa baris pengaturan, dipisah garis tipis
+/// (gaya "inset grouped" iOS). Semua grup selebar sama.
+class _SettingsGroup extends StatelessWidget {
+  final List<Widget> children;
+
+  const _SettingsGroup({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: AppStyle.card(),
+      child: Column(
+        children: [
+          for (var i = 0; i < children.length; i++) ...[
+            if (i > 0) AppStyle.hairline(indent: 58),
+            children[i],
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _SettingsRow extends StatelessWidget {
   final IconData icon;
   final String title;
-  final String subtitle;
+  final String? value;
+  final Color? valueDotColor;
   final VoidCallback onTap;
 
-  const _AccountMenuTile({
+  const _SettingsRow({
     required this.icon,
     required this.title,
-    required this.subtitle,
     required this.onTap,
+    this.value,
+    this.valueDotColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.1),
-                shape: BoxShape.circle,
+      behavior: HitTestBehavior.opaque,
+      child: SizedBox(
+        height: 54,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          child: Row(
+            children: [
+              Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: AppColors.primary,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(icon, size: 18, color: Colors.white),
               ),
-              child: Icon(
-                icon,
+              const SizedBox(width: 14),
+              Expanded(
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyles.productName.copyWith(
+                    fontSize: 14.5,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              if (valueDotColor != null) ...[
+                Container(
+                  width: 12,
+                  height: 12,
+                  decoration: BoxDecoration(
+                    color: valueDotColor,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 8),
+              ],
+              if (value != null) ...[
+                Text(value!, style: AppTextStyles.ratingText),
+                const SizedBox(width: 2),
+              ],
+              Icon(
+                Icons.chevron_right_rounded,
                 size: 22,
-                color: AppColors.primary,
+                color: AppColors.textMuted,
               ),
-            ),
-
-            const SizedBox(width: 14),
-
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: AppTextStyles.productName,
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: AppTextStyles.ratingText,
-                  ),
-                ],
-              ),
-            ),
-
-            const Icon(
-              Icons.chevron_right,
-              color: AppColors.textSecondary,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

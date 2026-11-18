@@ -103,7 +103,7 @@ class _ProgressCircle extends StatelessWidget {
       width: 34,
       height: 34,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.surface,
         shape: BoxShape.circle,
         border: Border.all(
           color: current ? AppColors.primary : AppColors.border,

@@ -347,11 +347,11 @@ class OrderModel {
     };
   }
 
-  /// Label tampilan: "Pick Up" (backend: Take Away) / "Dine In".
+  /// Label tampilan: "Take Away" / "Dine In" (sama dengan web kasir dan backend).
   static String orderTypeLabel(String? raw) {
     final text = (raw ?? '').toLowerCase().replaceAll(RegExp(r'[_\-\s]'), '');
     if (text.contains('dine')) return 'Dine In';
-    return 'Pick Up';
+    return 'Take Away';
   }
 
   /// Nilai yang dikirim ke backend.

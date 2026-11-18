@@ -100,13 +100,67 @@ class MockAuthRepository implements AuthRepository {
     return null;
   }
 
+  /// Kode OTP yang selalu "terkirim" di mode mock.
+  static const String demoOtp = '123456';
+  static const int _maxOtpAttempts = 5;
+
+  final Map<String, int> _otpAttempts = {}; // email -> percobaan salah (ada = OTP aktif)
+
+  /// Meniru backend: selalu sukses, OTP hanya dibuat untuk email yang terdaftar.
   @override
-  Future<void> forgotPassword({required String email}) async {
+  Future<void> requestPasswordOtp({required String email}) async {
     await Future<void>.delayed(latency);
 
-    if (!_accounts.containsKey(email.trim().toLowerCase())) {
-      throw const ApiException('Email tidak terdaftar.', statusCode: 404);
+    final key = email.trim().toLowerCase();
+    if (_accounts.containsKey(key)) _otpAttempts[key] = 0;
+  }
+
+  @override
+  Future<void> verifyPasswordOtp({
+    required String email,
+    required String code,
+  }) async {
+    await Future<void>.delayed(latency);
+    _checkOtp(email.trim().toLowerCase(), code);
+  }
+
+  @override
+  Future<void> resetPasswordWithOtp({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    await Future<void>.delayed(latency);
+
+    final key = email.trim().toLowerCase();
+    _checkOtp(key, code);
+    final account = _accounts[key]!;
+    _accounts[key] = _MockAccount(user: account.user, password: newPassword);
+    _otpAttempts.remove(key); // OTP hanya sekali pakai
+  }
+
+  void _checkOtp(String key, String code) {
+    final attempts = _otpAttempts[key];
+    if (attempts == null) {
+      throw const ApiException(
+        'Kode OTP salah atau sudah kedaluwarsa',
+        statusCode: 422,
+      );
     }
+    if (code == demoOtp) return;
+
+    if (attempts + 1 >= _maxOtpAttempts) {
+      _otpAttempts.remove(key);
+      throw const ApiException(
+        'Terlalu banyak kode salah. Minta kode OTP baru',
+        statusCode: 422,
+      );
+    }
+    _otpAttempts[key] = attempts + 1;
+    throw const ApiException(
+      'Kode OTP salah atau sudah kedaluwarsa',
+      statusCode: 422,
+    );
   }
 }
 

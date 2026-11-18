@@ -94,10 +94,33 @@ class ApiAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<void> forgotPassword({required String email}) async {
+  Future<void> requestPasswordOtp({required String email}) async {
     await _client.post(
-      ApiEndpoints.forgotPassword,
+      ApiEndpoints.forgotPasswordOtp,
       data: {'email': email},
+    );
+  }
+
+  @override
+  Future<void> verifyPasswordOtp({
+    required String email,
+    required String code,
+  }) async {
+    await _client.post(
+      ApiEndpoints.verifyPasswordOtp,
+      data: {'email': email, 'code': code},
+    );
+  }
+
+  @override
+  Future<void> resetPasswordWithOtp({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    await _client.post(
+      ApiEndpoints.resetPasswordOtp,
+      data: {'email': email, 'code': code, 'newPassword': newPassword},
     );
   }
 }

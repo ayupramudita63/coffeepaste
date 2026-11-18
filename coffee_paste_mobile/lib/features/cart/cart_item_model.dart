@@ -18,7 +18,10 @@ class CartItemModel {
   /// Kunci unik: produk sama dengan pilihan berbeda = baris berbeda.
   String get key => '${product.id}|${ice ?? ''}|${sugar ?? ''}|${size ?? ''}';
 
-  int get subtotal => product.price * quantity;
+  /// Harga satuan sesuai ukuran yang dipilih (Regular / Large).
+  int get unitPrice => product.priceFor(size);
+
+  int get subtotal => unitPrice * quantity;
 
   List<String> get optionParts {
     final parts = <String>[];

@@ -7,6 +7,7 @@ import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../providers/user_provider.dart';
+import '../../core/theme/app_style.dart';
 
 class AccountInfoScreen extends StatefulWidget {
   const AccountInfoScreen({super.key});
@@ -22,7 +23,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: AppColors.surface,
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
         ),
@@ -32,7 +33,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
             Text('Ganti Foto Profil', style: AppTextStyles.sectionTitle),
             const SizedBox(height: 16),
             ListTile(
-              leading: const Icon(Icons.photo_camera_outlined, color: AppColors.primary),
+              leading: Icon(Icons.photo_camera_outlined, color: AppColors.primary),
               title: const Text('Ambil dari Kamera'),
               onTap: () {
                 Navigator.of(context).pop();
@@ -40,7 +41,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.photo_library_outlined, color: AppColors.primary),
+              leading: Icon(Icons.photo_library_outlined, color: AppColors.primary),
               title: const Text('Pilih dari Galeri'),
               onTap: () {
                 Navigator.of(context).pop();
@@ -198,7 +199,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
               children: [
                 GestureDetector(
                   onTap: () => Navigator.of(context).maybePop(),
-                  child: const Icon(Icons.arrow_back, color: AppColors.primary, size: 24),
+                  child: Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.primary, size: 20),
                 ),
                 const SizedBox(width: 12),
                 Text(
@@ -211,11 +212,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
 
             Container(
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.border),
-              ),
+              decoration: AppStyle.card(),
               child: Row(
                 children: [
                   Stack(
@@ -231,7 +228,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
                               : null,
                         ),
                         child: user.avatarFile == null
-                            ? const Icon(Icons.person, size: 32, color: AppColors.primary)
+                            ? Icon(Icons.person, size: 32, color: AppColors.primary)
                             : null,
                       ),
                       Positioned(
@@ -242,7 +239,7 @@ class _AccountInfoScreenState extends State<AccountInfoScreen> {
                           child: Container(
                             width: 24,
                             height: 24,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               color: AppColors.primary,
                               shape: BoxShape.circle,
                               border: Border.fromBorderSide(
@@ -345,11 +342,7 @@ class _InfoFieldTile extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border),
-        ),
+        decoration: AppStyle.card(),
         child: Row(
           children: [
             Container(
@@ -372,7 +365,7 @@ class _InfoFieldTile extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right, color: AppColors.textSecondary),
+            Icon(Icons.chevron_right, color: AppColors.textSecondary),
           ],
         ),
       ),

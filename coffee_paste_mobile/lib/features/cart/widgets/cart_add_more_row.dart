@@ -37,7 +37,7 @@ class CartAddMoreRow extends StatelessWidget {
         ),
         OutlinedButton.icon(
           onPressed: onAddTap,
-          icon: const HugeIcon(
+          icon: HugeIcon(
             icon: HugeIcons.strokeRoundedCirclePlus,
             size: 18,
             color: AppColors.primary,
@@ -47,7 +47,7 @@ class CartAddMoreRow extends StatelessWidget {
             style: AppTextStyles.sectionAction,
           ),
           style: OutlinedButton.styleFrom(
-            side: const BorderSide(
+            side: BorderSide(
               color: AppColors.primary,
             ),
             padding: const EdgeInsets.symmetric(
@@ -55,7 +55,7 @@ class CartAddMoreRow extends StatelessWidget {
               vertical: 12,
             ),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(14),
             ),
           ),
         ),

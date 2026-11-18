@@ -167,7 +167,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   Row(
                     children: [
-                      const Expanded(child: Divider(color: AppColors.border)),
+                      Expanded(child: Divider(color: AppColors.border)),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: Text(
@@ -175,7 +175,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           style: AppTextStyles.sectionAction.copyWith(fontSize: 14),
                         ),
                       ),
-                      const Expanded(child: Divider(color: AppColors.border)),
+                      Expanded(child: Divider(color: AppColors.border)),
                     ],
                   ),
                   const SizedBox(height: 28),
@@ -252,12 +252,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       foregroundColor: AppColors.textOnPrimary,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(16),
                       ),
                       elevation: 0,
                     ),
                     child: isLoading
-                        ? const SizedBox(
+                        ? SizedBox(
                             height: 20,
                             width: 20,
                             child: CircularProgressIndicator(

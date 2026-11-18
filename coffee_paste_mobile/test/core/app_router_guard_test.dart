@@ -61,7 +61,6 @@ void main() {
         AppRoutes.productDetail,
         AppRoutes.productList,
         AppRoutes.accountInfo,
-        AppRoutes.language,
         AppRoutes.notifications,
         AppRoutes.changePassword,
         AppRoutes.about,

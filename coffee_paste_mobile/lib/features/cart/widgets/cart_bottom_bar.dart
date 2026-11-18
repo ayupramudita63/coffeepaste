@@ -18,13 +18,9 @@ class CartBottomBar extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 20),
       decoration: BoxDecoration(
         color: AppColors.authBackground,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 12,
-            offset: const Offset(0, -4),
-          ),
-        ],
+        border: Border(
+          top: BorderSide(color: AppColors.border, width: 0.5),
+        ),
       ),
       child: SizedBox(
         width: double.infinity,
@@ -33,10 +29,10 @@ class CartBottomBar extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.primary,
             padding: const EdgeInsets.symmetric(
-              vertical: 18,
+              vertical: 16,
             ),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(16),
             ),
             elevation: 0,
           ),

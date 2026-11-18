@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_style.dart';
 import '../../core/theme/app_text_styles.dart';
+import '../../providers/app_navigation_provider.dart';
 import '../../providers/cart_provider.dart';
 import '../../providers/menu_provider.dart';
 import '../../providers/order_provider.dart';
@@ -19,10 +21,6 @@ import 'widgets/order_tab_bar.dart';
 import 'widgets/review_order_sheet.dart';
 
 /// Halaman Pesanan: tab "Sedang Berlangsung" dan "Riwayat".
-///
-/// Polling status pesanan tidak diatur di sini: layar ini selalu hidup di
-/// dalam IndexedStack, jadi pollingnya dipegang `MainNavigationScreen` supaya
-/// notifikasi tetap berjalan walau tab lain yang aktif.
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
 
@@ -30,12 +28,59 @@ class OrdersScreen extends StatefulWidget {
   State<OrdersScreen> createState() => _OrdersScreenState();
 }
 
-class _OrdersScreenState extends State<OrdersScreen> {
+class _OrdersScreenState extends State<OrdersScreen>
+    with WidgetsBindingObserver {
   static const _ongoingTab = 0;
 
   int _selectedTab = _ongoingTab;
 
+  late final AppNavigationProvider _nav;
+  late final OrderProvider _orders;
+  AppLifecycleState _lifecycle = AppLifecycleState.resumed;
+
   bool get _isOngoingTab => _selectedTab == _ongoingTab;
+
+  /// Layar ini berada di IndexedStack, jadi tetap hidup walau tab lain aktif.
+  /// Polling dihidupkan hanya saat tab Pesanan terlihat DAN aplikasi di depan.
+  bool get _isVisible => _nav.tabIndex == AppNavigationProvider.ordersTab;
+
+  @override
+  void initState() {
+    super.initState();
+    _nav = context.read<AppNavigationProvider>();
+    _orders = context.read<OrderProvider>();
+    _nav.addListener(_syncPolling);
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _syncPolling());
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _nav.removeListener(_syncPolling);
+    _orders.stopPolling();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _lifecycle = state;
+    _syncPolling();
+    // Kembali dari background: perbarui langsung, jangan tunggu putaran berikutnya.
+    if (state == AppLifecycleState.resumed && _isVisible) {
+      _orders.refreshSilently();
+    }
+  }
+
+  void _syncPolling() {
+    final shouldPoll =
+        _isVisible && _lifecycle == AppLifecycleState.resumed;
+    if (shouldPoll) {
+      _orders.startPolling();
+    } else {
+      _orders.stopPolling();
+    }
+  }
 
   /// "Pesan Lagi": salin item pesanan ke keranjang (harga & ketersediaan dari
   /// menu terbaru), lalu buka keranjang.
@@ -113,9 +158,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
         child: Column(
           children: [
             const _OrdersHeader(),
-            const SizedBox(height: 18),
+            const SizedBox(height: 14),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppStyle.screenPadding,
+              ),
               child: OrderTabBar(
                 selectedIndex: _selectedTab,
                 onChanged: (index) {
@@ -128,7 +175,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
             const SizedBox(height: 20),
             Expanded(
               child: (orderProvider.isLoading && orderProvider.orders.isEmpty)
-                  ? const Center(
+                  ? Center(
                       child: CircularProgressIndicator(
                         color: AppColors.primary,
                       ),
@@ -156,7 +203,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
                       onRefresh: orderProvider.loadOrders,
                       child: ListView.builder(
                       physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 110),
+                      padding: const EdgeInsets.fromLTRB(
+                        AppStyle.screenPadding,
+                        0,
+                        AppStyle.screenPadding,
+                        24,
+                      ),
                       itemCount: orders.length,
                       itemBuilder: (context, index) {
                         final order = orders[index];
@@ -203,16 +255,22 @@ class _OrdersHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 20, 24, 0),
+      padding: const EdgeInsets.fromLTRB(
+        AppStyle.screenPadding,
+        14,
+        AppStyle.screenPadding,
+        0,
+      ),
       child: SizedBox(
-        height: 36,
-        child: Center(
+        height: 44,
+        child: Align(
+          alignment: Alignment.centerLeft,
           child: Text(
             'Pesanan',
             style: AppTextStyles.sectionTitle.copyWith(
-              fontSize: 28,
+              fontSize: 32,
               fontWeight: FontWeight.w700,
-              color: AppColors.primary,
+              letterSpacing: -0.6,
             ),
           ),
         ),

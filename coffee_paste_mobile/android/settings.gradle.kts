@@ -19,10 +19,8 @@ pluginManagement {
 plugins {
     id("dev.flutter.flutter-plugin-loader") version "1.0.0"
     id("com.android.application") version "8.7.0" apply false
-    // 2.1.20: wajib untuk firebase_core (memakai kotlin.compilerOptions()).
-    id("org.jetbrains.kotlin.android") version "2.1.20" apply false
-    // Membaca google-services.json (Firebase) untuk notifikasi push.
     id("com.google.gms.google-services") version "4.4.2" apply false
+    id("org.jetbrains.kotlin.android") version "1.8.22" apply false
 }
 
 include(":app")

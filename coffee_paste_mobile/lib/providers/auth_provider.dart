@@ -1,5 +1,6 @@
 import '../core/network/api_client.dart';
 import '../core/network/api_exception.dart';
+import '../core/notifications/push_service.dart';
 import '../core/storage/token_storage.dart';
 import '../features/auth/data/auth_repository.dart';
 import '../features/auth/data/google_sign_in_service.dart';
@@ -11,6 +12,7 @@ class AuthProvider extends BaseProvider {
   final ApiClient _client;
   final TokenStorage _storage;
   final GoogleSignInService? _googleSignIn;
+  final PushService? _push;
 
   UserModel? _user;
   bool _initialized = false;
@@ -21,11 +23,13 @@ class AuthProvider extends BaseProvider {
     this._client,
     this._storage, {
     GoogleSignInService? googleSignIn,
-  }) : _googleSignIn = googleSignIn {
+    PushService? push,
+  })  : _googleSignIn = googleSignIn,
+        _push = push {
     // Token ditolak server (kedaluwarsa) -> keluar otomatis.
     // Router (guard) yang memindahkan pengguna ke halaman login.
     _client.onUnauthorized = () {
-      logout();
+      logout(unregisterDevice: false);
     };
   }
 
@@ -181,10 +185,37 @@ class AuthProvider extends BaseProvider {
     }
   }
 
-  Future<bool> forgotPassword({required String email}) async {
+  /// Lupa password lewat OTP. Ketiganya mengembalikan true jika berhasil;
+  /// pesan error ada di [errorMessage].
+  Future<bool> requestPasswordOtp({required String email}) {
+    return _run(() => _repository.requestPasswordOtp(email: email));
+  }
+
+  Future<bool> verifyPasswordOtp({
+    required String email,
+    required String code,
+  }) {
+    return _run(() => _repository.verifyPasswordOtp(email: email, code: code));
+  }
+
+  Future<bool> resetPasswordWithOtp({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) {
+    return _run(
+      () => _repository.resetPasswordWithOtp(
+        email: email,
+        code: code,
+        newPassword: newPassword,
+      ),
+    );
+  }
+
+  Future<bool> _run(Future<void> Function() action) async {
     setLoading();
     try {
-      await _repository.forgotPassword(email: email);
+      await action();
       setSuccess();
       return true;
     } catch (error) {
@@ -193,7 +224,13 @@ class AuthProvider extends BaseProvider {
     }
   }
 
-  Future<void> logout() async {
+  Future<void> logout({bool unregisterDevice = true}) async {
+    // Cabut token perangkat selagi token login masih ada.
+    if (unregisterDevice) {
+      try {
+        await _push?.unregister().timeout(const Duration(seconds: 3));
+      } catch (_) {}
+    }
     _client.clearToken();
     _user = null;
     resetStatus();

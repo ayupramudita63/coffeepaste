@@ -22,10 +22,10 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  bool _isPickUp = true;
+  bool _isTakeAway = true;
   PaymentMethod _paymentMethod = PaymentMethod.qris;
 
-  String get _orderTypeLabel => _isPickUp ? 'Pick Up' : 'Dine In';
+  String get _orderTypeLabel => _isTakeAway ? 'Take Away' : 'Dine In';
 
   Future<void> _onPesanTap() async {
     final cart = context.read<CartProvider>();
@@ -101,10 +101,10 @@ class _CartScreenState extends State<CartScreen> {
                   child: isEmpty
                       ? const CartEmptyState()
                       : CartContent(
-                          isPickUp: _isPickUp,
+                          isTakeAway: _isTakeAway,
                           onOrderTypeChanged: (value) {
                             setState(() {
-                              _isPickUp = value;
+                              _isTakeAway = value;
                             });
                           },
                           paymentMethod: _paymentMethod,

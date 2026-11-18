@@ -22,11 +22,11 @@ class CheckoutHeader extends StatelessWidget {
               child: Container(
                 width: 42,
                 height: 42,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   color: AppColors.surface,
                   shape: BoxShape.circle,
                 ),
-                child: const Center(
+                child: Center(
                   child: HugeIcon(
                     icon: HugeIcons.strokeRoundedArrowLeft01,
                     size: 18,

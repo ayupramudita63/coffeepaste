@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../providers/app_navigation_provider.dart';
 import '../../providers/menu_provider.dart';
-import '../../providers/notification_provider.dart';
 import '../../providers/order_provider.dart';
 import 'widgets/bottom_nav_bar.dart';
 import '../home/home_screen.dart';
@@ -18,9 +17,12 @@ class MainNavigationScreen extends StatefulWidget {
   State<MainNavigationScreen> createState() => _MainNavigationScreenState();
 }
 
-class _MainNavigationScreenState extends State<MainNavigationScreen>
-    with WidgetsBindingObserver {
+class _MainNavigationScreenState extends State<MainNavigationScreen> {
   static const int _ordersTabIndex = 2;
+
+  /// Tab baru dibangun saat pertama dibuka (bukan semuanya sekaligus di awal),
+  /// lalu dipertahankan agar posisi scroll dan datanya tidak hilang.
+  final Set<int> _visited = {0};
 
   static const List<Widget> _pages = [
     HomeScreen(),
@@ -29,55 +31,14 @@ class _MainNavigationScreenState extends State<MainNavigationScreen>
     AccountScreen(),
   ];
 
-  late final OrderProvider _orders;
-  AppLifecycleState _lifecycle = AppLifecycleState.resumed;
-
   @override
   void initState() {
     super.initState();
-    _orders = context.read<OrderProvider>();
-    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       context.read<MenuProvider>().loadMenu();
-      _orders.loadOrders();
-      _syncPolling();
+      context.read<OrderProvider>().loadOrders();
     });
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    // Penanggung jawab polling pindah ke layar ini, jadi berhenti di sini
-    // (layar Pesanan tidak lagi mengatur timer).
-    _orders.stopPolling();
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    _lifecycle = state;
-    _syncPolling();
-    // Kembali dari background: tarik perubahan terbaru supaya tidak tertunda
-    // sampai tab Pesanan dibuka. Bila push server aktif, perubahan selama di
-    // background pasti sudah tampil sebagai notifikasi push, jadi tarikan ini
-    // cukup memperbarui data tanpa mengirim notifikasi kedua.
-    if (state == AppLifecycleState.resumed) {
-      final pushActive =
-          context.read<NotificationProvider>().pushEnabled;
-      _orders.refreshSilently(onlyIfOngoing: true, notify: !pushActive);
-    }
-  }
-
-  /// Polling berjalan selama aplikasi terlihat, di tab mana pun.
-  /// Pengecekan server sendiri hanya terjadi bila ada pesanan berlangsung
-  /// (`refreshSilently(onlyIfOngoing: true)`), jadi timer ini murah.
-  void _syncPolling() {
-    if (_lifecycle == AppLifecycleState.resumed) {
-      _orders.startPolling();
-    } else {
-      _orders.stopPolling();
-    }
   }
 
   void _onTabTap(int index) {
@@ -85,13 +46,14 @@ class _MainNavigationScreenState extends State<MainNavigationScreen>
 
     // Status pesanan bisa berubah di kasir, jadi muat ulang saat tab dibuka.
     if (index == _ordersTabIndex) {
-      _orders.loadOrders();
+      context.read<OrderProvider>().loadOrders();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final nav = context.watch<AppNavigationProvider>();
+    _visited.add(nav.tabIndex);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -102,7 +64,10 @@ class _MainNavigationScreenState extends State<MainNavigationScreen>
       ),
       body: IndexedStack(
         index: nav.tabIndex,
-        children: _pages,
+        children: [
+          for (var i = 0; i < _pages.length; i++)
+            _visited.contains(i) ? _pages[i] : const SizedBox.shrink(),
+        ],
       ),
     );
   }

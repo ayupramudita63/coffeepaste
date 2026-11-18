@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:hugeicons/hugeicons.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_style.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/utils/currency_formatter.dart';
 import '../../../shared/models/product_model.dart';
 import '../../../shared/widgets/app_image.dart';
 
+/// Kartu produk di grid 2 kolom. Setiap kartu menempati sel grid yang
+/// sama besar; foto di atas, nama + deskripsi di tengah, dan baris
+/// harga + tombol tambah selalu menempel di dasar kartu.
 class MenuProductTile extends StatelessWidget {
   final ProductModel product;
   final VoidCallback onTap;
@@ -17,97 +21,86 @@ class MenuProductTile extends StatelessWidget {
     required this.onAddTap,
   });
 
-  String _formatPrice(int price) {
-    final s = price.toString();
-    final buffer = StringBuffer();
-    for (int i = 0; i < s.length; i++) {
-      final posFromRight = s.length - i;
-      buffer.write(s[i]);
-      if (posFromRight > 1 && posFromRight % 3 == 1) buffer.write('.');
-    }
-    return 'Rp $buffer';
-  }
+  Widget _placeholder() => Container(
+        color: AppColors.surfaceMuted,
+        child: Icon(Icons.local_cafe, color: AppColors.primary),
+      );
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.surfaceMuted),
-        ),
+        clipBehavior: Clip.antiAlias,
+        decoration: AppStyle.card(radius: AppStyle.productRadius),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-              child: AspectRatio(
-                aspectRatio: 4 / 3,
-                child: product.imageUrl != null
-                    ? appImage(product.imageUrl!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Container(
-                          color: AppColors.surfaceMuted,
-                          child: const Icon(Icons.local_cafe, color: AppColors.primary),
-                        ),
-                      )
-                    : Container(
-                        color: AppColors.surfaceMuted,
-                        child: const Icon(Icons.local_cafe, color: AppColors.primary),
-                      ),
-              ),
+            AspectRatio(
+              aspectRatio: 4 / 3,
+              child: product.imageUrl != null
+                  ? appImage(
+                      product.imageUrl!,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          _placeholder(),
+                    )
+                  : _placeholder(),
             ),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    product.name,
-                    style: AppTextStyles.productName,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    product.description,
-                    style: AppTextStyles.ratingText,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          _formatPrice(product.price),
-                          style: AppTextStyles.productPrice,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: onAddTap,
-                        child: Container(
-                          width: 26,
-                          height: 26,
-                          decoration: const BoxDecoration(
-                            color: AppColors.primary,
-                            shape: BoxShape.circle,
-                          ),
-                          child: HugeIcon(
-                            icon: HugeIcons.strokeRoundedCirclePlus,
-                            size: 14,
-                            color: Colors.white,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.name,
+                      style: AppTextStyles.productName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      product.description,
+                      style: AppTextStyles.ratingText.copyWith(fontSize: 11.5),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const Spacer(),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            formatRupiah(product.price),
+                            style: AppTextStyles.productPrice.copyWith(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        GestureDetector(
+                          onTap: onAddTap,
+                          behavior: HitTestBehavior.opaque,
+                          child: Container(
+                            width: 28,
+                            height: 28,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.add_rounded,
+                              size: 18,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

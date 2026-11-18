@@ -15,46 +15,73 @@ class HomeHeaderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dark = AppColors.isDark;
+    // Foto menempel ke tepi atas layar (di bawah status bar tetap ada ruang
+    // untuk logo dan teks).
+    final top = MediaQuery.of(context).padding.top;
+
     return SizedBox(
-      height: 200,
+      height: 190 + top,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          // Foto kopi di kanan, memudar ke kiri, atas, dan bawah
+          // Foto kopi di kanan, memudar ke kiri, atas, dan bawah.
+          // Di mode gelap foto diredupkan dan tepi kanannya ikut memudar
+          // supaya menyatu dengan latar, tidak seperti kotak terang.
           Positioned(
             right: -20,
+            top: 0,
             bottom: 0,
             child: ShaderMask(
-              shaderCallback: (rect) => const LinearGradient(
+              shaderCallback: (rect) => LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors: [Colors.transparent, Colors.black, Colors.black],
-                stops: [0.0, 0.4, 1.0],
+                colors: dark
+                    ? const [
+                        Colors.transparent,
+                        Colors.black,
+                        Colors.black,
+                        Colors.transparent,
+                      ]
+                    : const [Colors.transparent, Colors.black, Colors.black],
+                stops: dark ? const [0.0, 0.5, 0.75, 1.0] : const [0.0, 0.4, 1.0],
               ).createShader(rect),
               blendMode: BlendMode.dstIn,
               child: ShaderMask(
-                shaderCallback: (rect) => const LinearGradient(
+                shaderCallback: (rect) => LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
+                  // Tepi atas tidak memudar supaya foto rapat ke atas layar.
+                  colors: const [
                     Colors.black,
                     Colors.black,
                     Colors.transparent,
                   ],
-                  stops: [0.0, 0.25, 0.85, 1.0],
+                  stops: dark
+                      ? const [0.0, 0.6, 1.0]
+                      : const [0.0, 0.8, 1.0],
                 ).createShader(rect),
                 blendMode: BlendMode.dstIn,
-                child: Image.asset(
-                  'assets/images/hero_coffee.jpg',
-                  width: 230,
-                  height: 170,
-                  fit: BoxFit.cover,
-                  alignment: Alignment.centerRight,
-                  errorBuilder: (context, error, stackTrace) {
-                    debugPrint('Gagal memuat hero_coffee.jpg: $error');
-                    return const SizedBox(width: 230, height: 170);
-                  },
+                child: ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                    dark ? const Color(0xFF8C8C8C) : Colors.white,
+                    BlendMode.modulate,
+                  ),
+                  child: Image.asset(
+                    'assets/images/hero_coffee.jpg',
+                    width: 230,
+                    height: 190 + top,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.centerRight,
+                    // Dekode seukuran tampilnya, bukan ukuran file aslinya.
+                    cacheHeight:
+                        ((190 + top) * MediaQuery.devicePixelRatioOf(context))
+                            .round(),
+                    errorBuilder: (context, error, stackTrace) {
+                      debugPrint('Gagal memuat hero_coffee.jpg: $error');
+                      return SizedBox(width: 230, height: 190 + top);
+                    },
+                  ),
                 ),
               ),
             ),
@@ -63,19 +90,21 @@ class HomeHeaderCard extends StatelessWidget {
           // Logo di kiri atas (file putih diwarnai hijau supaya terbaca di latar krem)
           Positioned(
             left: 0,
-            top: 0,
+            top: top + 16,
             child: ColorFiltered(
-              colorFilter: const ColorFilter.mode(
+              colorFilter: ColorFilter.mode(
                 AppColors.primary,
                 BlendMode.srcIn,
               ),
               child: Image.asset(
                 'assets/images/logo1.png',
                 height: 40,
+                cacheHeight:
+                    (40 * MediaQuery.devicePixelRatioOf(context)).round(),
                 fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) => Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: const [
+                  children: [
                     Icon(Icons.local_cafe, color: AppColors.primary, size: 24),
                     SizedBox(width: 8),
                     Text(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/theme/app_style.dart';
 
 /// Pilihan metode pembayaran (satu dari beberapa): ikon, judul, keterangan, tanda terpilih.
 class PaymentOptionTile extends StatelessWidget {
@@ -26,15 +27,14 @@ class PaymentOptionTile extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(AppStyle.cardPadding - 2),
         decoration: BoxDecoration(
-          color: selected
-              ? AppColors.primary.withOpacity(0.06)
-              : AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(AppStyle.cardRadius),
+          boxShadow: AppStyle.softShadow,
           border: Border.all(
-            color: selected ? AppColors.primary : AppColors.border,
-            width: selected ? 1.5 : 1,
+            color: selected ? AppColors.primary : Colors.transparent,
+            width: 1.5,
           ),
         ),
         child: Row(
@@ -60,7 +60,7 @@ class PaymentOptionTile extends StatelessWidget {
               ),
             ),
             Icon(
-              selected ? Icons.radio_button_checked : Icons.radio_button_off,
+              selected ? Icons.check_circle_rounded : Icons.circle_outlined,
               color: selected ? AppColors.primary : AppColors.textMuted,
             ),
           ],

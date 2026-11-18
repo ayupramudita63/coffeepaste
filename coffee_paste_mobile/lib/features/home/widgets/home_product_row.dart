@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/theme/app_style.dart';
 import '../../../shared/models/product_model.dart';
 import 'home_product_card.dart';
 
@@ -18,17 +19,18 @@ class HomeProductRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const gap = 10.0;
+    const gap = AppStyle.gap;
 
     return LayoutBuilder(
       builder: (context, constraints) {
         final cardWidth = (constraints.maxWidth - gap * 2) / 3;
 
         return SizedBox(
-          height: 168,
+          height: 184,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             clipBehavior: Clip.none,
+            physics: const BouncingScrollPhysics(),
             itemCount: products.length,
             separatorBuilder: (_, __) => const SizedBox(width: gap),
             itemBuilder: (context, index) {

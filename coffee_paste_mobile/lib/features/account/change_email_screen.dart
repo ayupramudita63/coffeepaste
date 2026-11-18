@@ -135,7 +135,7 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
               children: [
                 GestureDetector(
                   onTap: () => Navigator.of(context).maybePop(),
-                  child: const Icon(Icons.arrow_back,
+                  child: Icon(Icons.arrow_back_ios_new_rounded,
                       color: AppColors.primary, size: 24),
                 ),
                 const SizedBox(width: 12),
@@ -227,7 +227,7 @@ class _ChangeEmailScreenState extends State<ChangeEmailScreen> {
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primary,
         padding: const EdgeInsets.symmetric(vertical: 16),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         elevation: 0,
       ),
       child: Text(

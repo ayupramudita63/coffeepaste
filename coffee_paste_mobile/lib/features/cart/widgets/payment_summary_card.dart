@@ -4,6 +4,7 @@ import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/currency_formatter.dart';
 import 'dashed_divider.dart';
 import 'price_row.dart';
+import '../../../core/theme/app_style.dart';
 
 /// Kartu "Rincian Pembayaran": subtotal, PPN, dan total pembayaran.
 class PaymentSummaryCard extends StatelessWidget {
@@ -22,13 +23,7 @@ class PaymentSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.border,
-        ),
-      ),
+      decoration: AppStyle.card(),
       child: Column(
         children: [
           PriceRow(

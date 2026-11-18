@@ -6,6 +6,7 @@ import 'order_date_row.dart';
 import 'order_pill.dart';
 import 'order_product_tile.dart';
 import 'order_total_row.dart';
+import '../../../core/theme/app_style.dart';
 
 /// Kartu pesanan pada tab "Riwayat" (selesai atau dibatalkan).
 class HistoryOrderCard extends StatelessWidget {
@@ -34,19 +35,9 @@ class HistoryOrderCard extends StatelessWidget {
     final canReview = order.reviewableItems.isNotEmpty;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 14,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+      margin: const EdgeInsets.only(bottom: AppStyle.gap + 4),
+      padding: const EdgeInsets.all(AppStyle.cardPadding),
+      decoration: AppStyle.card(),
       child: Column(
         children: [
           Row(
@@ -166,16 +157,16 @@ class HistoryOrderCard extends StatelessWidget {
       );
 
   static const _compactPadding = EdgeInsets.symmetric(horizontal: 8, vertical: 6);
-  static const _compactSize = Size(0, 34);
+  static const _compactSize = Size(0, 38);
 
   static ButtonStyle _outlinedStyle() => OutlinedButton.styleFrom(
         foregroundColor: AppColors.primary,
-        side: BorderSide(color: AppColors.primary),
+        side: BorderSide(color: AppColors.primary.withOpacity(0.45)),
         padding: _compactPadding,
         minimumSize: _compactSize,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         visualDensity: VisualDensity.compact,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       );
 
   static ButtonStyle _filledStyle() => FilledButton.styleFrom(
@@ -185,7 +176,7 @@ class HistoryOrderCard extends StatelessWidget {
         minimumSize: _compactSize,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         visualDensity: VisualDensity.compact,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       );
 }
 

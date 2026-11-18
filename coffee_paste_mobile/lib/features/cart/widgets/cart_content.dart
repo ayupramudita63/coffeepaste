@@ -14,14 +14,14 @@ import 'payment_summary_card.dart';
 
 /// Isi halaman checkout saat keranjang tidak kosong.
 class CartContent extends StatelessWidget {
-  final bool isPickUp;
+  final bool isTakeAway;
   final ValueChanged<bool> onOrderTypeChanged;
   final PaymentMethod paymentMethod;
   final ValueChanged<PaymentMethod> onPaymentMethodChanged;
 
   const CartContent({
     super.key,
-    required this.isPickUp,
+    required this.isTakeAway,
     required this.onOrderTypeChanged,
     required this.paymentMethod,
     required this.onPaymentMethodChanged,
@@ -37,7 +37,7 @@ class CartContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           OrderTypeToggle(
-            isPickUp: isPickUp,
+            isTakeAway: isTakeAway,
             onChanged: onOrderTypeChanged,
           ),
           const SizedBox(height: 12),

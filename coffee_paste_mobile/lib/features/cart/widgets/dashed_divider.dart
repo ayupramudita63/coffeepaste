@@ -19,7 +19,7 @@ class DashedDivider extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: List.generate(
             count,
-            (_) => const SizedBox(
+            (_) => SizedBox(
               width: dashWidth,
               height: 1,
               child: DecoratedBox(

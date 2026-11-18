@@ -37,10 +37,24 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     OptionItem(label: 'No Sugar', icon: HugeIcons.strokeRoundedCube),
   ];
 
-  final _sizeOptions = const [
-    OptionItem(label: 'Regular', icon: HugeIcons.strokeRoundedCupSoda),
-    OptionItem(label: 'Large', icon: HugeIcons.strokeRoundedCupSoda),
-  ];
+  // Tiap ukuran menampilkan harganya sendiri (Regular dan Large berbeda).
+  List<OptionItem> get _sizeOptions => [
+        OptionItem(
+          label: 'Regular',
+          icon: HugeIcons.strokeRoundedCupSoda,
+          caption: _formatPrice(widget.product.price),
+        ),
+        OptionItem(
+          label: 'Large',
+          icon: HugeIcons.strokeRoundedCupSoda,
+          caption: _formatPrice(widget.product.largePrice),
+        ),
+      ];
+
+  /// Harga satuan sesuai ukuran yang sedang dipilih.
+  int get _currentPrice => _isDrink
+      ? widget.product.priceFor(_sizeOptions[_sizeIndex].label)
+      : widget.product.price;
 
   bool get _isDrink => widget.product.isDrink;
 
@@ -123,12 +137,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) => Container(
                                   color: AppColors.surfaceMuted,
-                                  child: const Icon(Icons.local_cafe, size: 60, color: AppColors.primary),
+                                  child: Icon(Icons.local_cafe, size: 60, color: AppColors.primary),
                                 ),
                               )
                             : Container(
                                 color: AppColors.surfaceMuted,
-                                child: const Icon(Icons.local_cafe, size: 60, color: AppColors.primary),
+                                child: Icon(Icons.local_cafe, size: 60, color: AppColors.primary),
                               ),
                       ),
                     ),
@@ -173,7 +187,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       Text(product.name, style: AppTextStyles.greetingTitle),
                       const SizedBox(height: 4),
                       Text(
-                        _formatPrice(product.price),
+                        _formatPrice(_currentPrice),
                         style: AppTextStyles.greetingTitle.copyWith(fontSize: 20),
                       ),
                       const SizedBox(height: 10),
@@ -278,10 +292,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           onPressed: _onAddToCartTap,
                           style: OutlinedButton.styleFrom(
                             foregroundColor: AppColors.primary,
-                            side: const BorderSide(color: AppColors.primary),
+                            side: BorderSide(color: AppColors.primary),
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
+                              borderRadius: BorderRadius.circular(16),
                             ),
                           ),
                           child: Row(
@@ -317,7 +331,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             backgroundColor: AppColors.primary,
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
+                              borderRadius: BorderRadius.circular(16),
                             ),
                             elevation: 0,
                           ),
@@ -355,7 +369,7 @@ class _CircleIconButton extends StatelessWidget {
       child: Container(
         width: 42,
         height: 42,
-        decoration: const BoxDecoration(color: AppColors.surface, shape: BoxShape.circle),
+        decoration: BoxDecoration(color: AppColors.surface, shape: BoxShape.circle),
         child: Center(child: HugeIcon(icon: icon, size: 18, color: AppColors.primary)),
       ),
     );
@@ -375,7 +389,7 @@ class _QuantityButton extends StatelessWidget {
       child: Container(
         width: 40,
         height: 40,
-        decoration: const BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+        decoration: BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
         child: Center(child: HugeIcon(icon: icon, size: 18, color: Colors.white)),
       ),
     );

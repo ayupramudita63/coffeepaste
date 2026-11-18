@@ -45,6 +45,10 @@
 	<string>Dipakai untuk menyimpan kode QRIS dan struk pesanan ke galeri.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 </dict>

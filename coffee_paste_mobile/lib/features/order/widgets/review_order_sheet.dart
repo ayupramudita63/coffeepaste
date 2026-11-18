@@ -154,7 +154,7 @@ class _ReviewOrderSheetState extends State<ReviewOrderSheet> {
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(22),
+                  borderRadius: BorderRadius.circular(16),
                 ),
               ),
               child: isSubmitting

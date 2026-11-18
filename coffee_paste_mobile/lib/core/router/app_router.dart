@@ -2,8 +2,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/account/about_screen.dart';
 import '../../features/account/account_info_screen.dart';
+import '../../features/account/appearance_screen.dart';
 import '../../features/account/change_password_screen.dart';
-import '../../features/account/language_screen.dart';
 import '../../features/account/notification_settings_screen.dart';
 import '../../features/auth/forgot_password_screen.dart';
 import '../../features/auth/login_screen.dart';
@@ -38,11 +38,11 @@ class AppRoutes {
   static const String orderReceipt = '/order/receipt';
 
   static const String accountInfo = '/account/info';
-  static const String language = '/account/language';
   static const String notifications = '/account/notifications';
   static const String changePassword = '/account/change-password';
   static const String changeEmail = '/account/change-email';
   static const String about = '/account/about';
+  static const String appearance = '/account/appearance';
 
   /// Halaman yang boleh dibuka tanpa login.
   static const Set<String> publicRoutes = {
@@ -143,10 +143,6 @@ class AppRouter {
           builder: (context, state) => const AccountInfoScreen(),
         ),
         GoRoute(
-          path: AppRoutes.language,
-          builder: (context, state) => const LanguageScreen(),
-        ),
-        GoRoute(
           path: AppRoutes.notifications,
           builder: (context, state) => const NotificationSettingsScreen(),
         ),
@@ -157,6 +153,10 @@ class AppRouter {
         GoRoute(
           path: AppRoutes.about,
           builder: (context, state) => const AboutScreen(),
+        ),
+        GoRoute(
+          path: AppRoutes.appearance,
+          builder: (context, state) => const AppearanceScreen(),
         ),
       ],
     );

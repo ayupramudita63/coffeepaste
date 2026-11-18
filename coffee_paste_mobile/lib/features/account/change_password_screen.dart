@@ -99,7 +99,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               children: [
                 GestureDetector(
                   onTap: () => Navigator.of(context).maybePop(),
-                  child: const Icon(Icons.arrow_back, color: AppColors.primary, size: 24),
+                  child: Icon(Icons.arrow_back_ios_new_rounded, color: AppColors.primary, size: 20),
                 ),
                 const SizedBox(width: 12),
                 Text(
@@ -198,7 +198,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 elevation: 0,
               ),
               child: Text(

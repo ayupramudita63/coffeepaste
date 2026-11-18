@@ -5,6 +5,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/utils/currency_formatter.dart';
 import '../cart_item_model.dart';
 import '../../../shared/widgets/app_image.dart';
+import '../../../core/theme/app_style.dart';
 
 class CartItemTile extends StatelessWidget {
   final CartItemModel item;
@@ -24,11 +25,7 @@ class CartItemTile extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.border),
-      ),
+      decoration: AppStyle.card(),
       child: Row(
         children: [
           ClipRRect(
@@ -41,12 +38,12 @@ class CartItemTile extends StatelessWidget {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => Container(
                         color: AppColors.surfaceMuted,
-                        child: const Icon(Icons.local_cafe, color: AppColors.primary),
+                        child: Icon(Icons.local_cafe, color: AppColors.primary),
                       ),
                     )
                   : Container(
                       color: AppColors.surfaceMuted,
-                      child: const Icon(Icons.local_cafe, color: AppColors.primary),
+                      child: Icon(Icons.local_cafe, color: AppColors.primary),
                     ),
             ),
           ),

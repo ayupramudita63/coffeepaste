@@ -125,7 +125,7 @@ void main() {
     test('QRIS: pesanan menunggu pembayaran dengan QR', () async {
       final ok = await provider.createOrder(
         items: [_cartItem()],
-        orderType: 'Pick Up',
+        orderType: 'Take Away',
         paymentMethod: PaymentMethod.qris,
       );
       final order = provider.lastCreatedOrder!;
@@ -154,7 +154,7 @@ void main() {
     test('pesanan yang belum diproses bisa dibatalkan customer', () async {
       await provider.createOrder(
         items: [_cartItem()],
-        orderType: 'Pick Up',
+        orderType: 'Take Away',
         paymentMethod: PaymentMethod.cash,
       );
       final id = provider.lastCreatedOrder!.id;
@@ -169,7 +169,7 @@ void main() {
     test('pesanan batal tidak bisa dibatalkan lagi', () async {
       await provider.createOrder(
         items: [_cartItem()],
-        orderType: 'Pick Up',
+        orderType: 'Take Away',
       );
       final id = provider.lastCreatedOrder!.id;
       await provider.cancelOrder(id);

@@ -3,11 +3,13 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../core/router/app_router.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_style.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../features/home/widgets/category_chip_row.dart';
 import '../../providers/app_navigation_provider.dart';
 import '../../providers/menu_provider.dart';
 import '../../shared/widgets/error_retry_view.dart';
+import '../../shared/widgets/ios_search_field.dart';
 import '../../shared/models/product_model.dart';
 import 'widgets/menu_product_tile.dart';
 import '../../shared/widgets/cart_icon_button.dart';
@@ -60,90 +62,57 @@ class _MenuScreenState extends State<MenuScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header
+            // Judul besar ala iOS (rata kiri) + keranjang di kanan
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
+              padding: const EdgeInsets.fromLTRB(
+                AppStyle.screenPadding,
+                14,
+                AppStyle.screenPadding,
+                12,
+              ),
               child: SizedBox(
-                height: 32,
-                child: Stack(
-                  alignment: Alignment.center,
+                height: 44,
+                child: Row(
                   children: [
-                    Center(
+                    Expanded(
                       child: Text(
                         'Menu',
                         style: AppTextStyles.sectionTitle.copyWith(
-                          fontSize: 28,
+                          fontSize: 32,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -0.6,
                         ),
                       ),
                     ),
-                    const Align(
-                      alignment: Alignment.centerRight,
-                      child: CartIconButton(),
-                    ),
+                    const CartIconButton(),
                   ],
                 ),
               ),
             ),
 
-            // Search
+            // Cari
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextField(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppStyle.screenPadding,
+              ),
+              child: IosSearchField(
                 controller: _searchController,
+                hint: 'Cari kopi atau makanan...',
                 onChanged: (value) {
                   setState(() {
                     _searchQuery = value;
                   });
                 },
-                decoration: InputDecoration(
-                  hintText: 'Cari kopi atau makanan...',
-                  prefixIcon: const Icon(
-                    Icons.search,
-                    color: AppColors.textSecondary,
-                  ),
-                  suffixIcon: _searchQuery.isNotEmpty
-                      ? IconButton(
-                          onPressed: () {
-                            _searchController.clear();
-                            setState(() {
-                              _searchQuery = '';
-                            });
-                          },
-                          icon: const Icon(
-                            Icons.close,
-                            color: AppColors.textSecondary,
-                          ),
-                        )
-                      : null,
-                  filled: true,
-                  fillColor: AppColors.surfaceMuted,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: const BorderSide(
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ),
               ),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
 
             // Kategori (dari backend)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppStyle.screenPadding,
+              ),
               child: CategoryChipRow(
                 categories: menu.categories,
                 selectedCategoryId: selectedCategoryId,
@@ -155,12 +124,12 @@ class _MenuScreenState extends State<MenuScreen> {
               ),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 14),
 
             // Daftar produk
             Expanded(
               child: (menu.isLoading && !menu.hasData)
-                  ? const Center(
+                  ? Center(
                       child: CircularProgressIndicator(
                         color: AppColors.primary,
                       ),
@@ -205,13 +174,20 @@ class _MenuScreenState extends State<MenuScreen> {
                       onRefresh: menu.loadMenu,
                       child: GridView.builder(
                       physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
+                      keyboardDismissBehavior:
+                          ScrollViewKeyboardDismissBehavior.onDrag,
+                      padding: const EdgeInsets.fromLTRB(
+                        AppStyle.screenPadding,
+                        0,
+                        AppStyle.screenPadding,
+                        24,
+                      ),
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 0.68,
+                        crossAxisSpacing: AppStyle.gap,
+                        mainAxisSpacing: AppStyle.gap,
+                        childAspectRatio: AppStyle.productGridAspect,
                       ),
                       itemCount: filteredProducts.length,
                       itemBuilder: (context, index) {

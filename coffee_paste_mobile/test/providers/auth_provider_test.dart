@@ -242,4 +242,125 @@ void main() {
       expect(await storage.readToken(), 'token-x');
     });
   });
+
+  group('lupa password (OTP)', () {
+    const wrongCodeMessage = 'Kode OTP salah atau sudah kedaluwarsa';
+
+    test('email tidak terdaftar: tetap "berhasil", tapi kode tidak pernah valid',
+        () async {
+      final auth = buildProvider();
+
+      final requested =
+          await auth.requestPasswordOtp(email: 'tidakada@example.com');
+      expect(requested, isTrue); // tidak membocorkan email yang terdaftar
+
+      final verified = await auth.verifyPasswordOtp(
+        email: 'tidakada@example.com',
+        code: MockAuthRepository.demoOtp,
+      );
+      expect(verified, isFalse);
+      expect(auth.errorMessage, wrongCodeMessage);
+    });
+
+    test('kode benar: verifikasi lalu password diganti, login pakai yang baru',
+        () async {
+      final auth = buildProvider();
+      const newPassword = 'PasswordBaru1';
+
+      expect(await auth.requestPasswordOtp(email: AppConfig.demoEmail), isTrue);
+      expect(
+        await auth.verifyPasswordOtp(
+          email: AppConfig.demoEmail,
+          code: MockAuthRepository.demoOtp,
+        ),
+        isTrue,
+      );
+      expect(
+        await auth.resetPasswordWithOtp(
+          email: AppConfig.demoEmail,
+          code: MockAuthRepository.demoOtp,
+          newPassword: newPassword,
+        ),
+        isTrue,
+      );
+
+      expect(
+        await auth.login(
+          email: AppConfig.demoEmail,
+          password: AppConfig.demoPassword,
+        ),
+        isFalse,
+        reason: 'password lama tidak boleh berlaku lagi',
+      );
+      expect(
+        await auth.login(email: AppConfig.demoEmail, password: newPassword),
+        isTrue,
+      );
+    });
+
+    test('tanpa minta kode dulu: ditolak', () async {
+      final auth = buildProvider();
+
+      final ok = await auth.resetPasswordWithOtp(
+        email: AppConfig.demoEmail,
+        code: MockAuthRepository.demoOtp,
+        newPassword: 'PasswordBaru1',
+      );
+
+      expect(ok, isFalse);
+      expect(auth.errorMessage, wrongCodeMessage);
+    });
+
+    test('kode salah: ditolak; terlalu banyak salah membatalkan kode', () async {
+      final auth = buildProvider();
+      await auth.requestPasswordOtp(email: AppConfig.demoEmail);
+
+      for (var i = 0; i < 4; i++) {
+        final ok = await auth.verifyPasswordOtp(
+          email: AppConfig.demoEmail,
+          code: '000000',
+        );
+        expect(ok, isFalse);
+        expect(auth.errorMessage, wrongCodeMessage);
+      }
+
+      // Percobaan ke-5 menghabiskan batas.
+      await auth.verifyPasswordOtp(email: AppConfig.demoEmail, code: '000000');
+      expect(auth.errorMessage, contains('Terlalu banyak'));
+
+      // Kode benar pun tidak berlaku lagi sampai minta kode baru.
+      final ok = await auth.verifyPasswordOtp(
+        email: AppConfig.demoEmail,
+        code: MockAuthRepository.demoOtp,
+      );
+      expect(ok, isFalse);
+
+      await auth.requestPasswordOtp(email: AppConfig.demoEmail);
+      expect(
+        await auth.verifyPasswordOtp(
+          email: AppConfig.demoEmail,
+          code: MockAuthRepository.demoOtp,
+        ),
+        isTrue,
+      );
+    });
+
+    test('kode hanya berlaku sekali', () async {
+      final auth = buildProvider();
+      await auth.requestPasswordOtp(email: AppConfig.demoEmail);
+      await auth.resetPasswordWithOtp(
+        email: AppConfig.demoEmail,
+        code: MockAuthRepository.demoOtp,
+        newPassword: 'PasswordBaru1',
+      );
+
+      final again = await auth.resetPasswordWithOtp(
+        email: AppConfig.demoEmail,
+        code: MockAuthRepository.demoOtp,
+        newPassword: 'PasswordLain1',
+      );
+
+      expect(again, isFalse);
+    });
+  });
 }

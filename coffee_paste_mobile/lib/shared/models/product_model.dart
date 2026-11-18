@@ -5,7 +5,8 @@ import 'category_model.dart';
 class ProductModel {
   final String id;
   final String name;
-  final int price;
+  final int price; // harga Regular
+  final int? priceLarge; // harga Large (minuman); null = Regular + defaultLargeSurcharge
   final double rating;
   final int ratingCount;
   final String? imageUrl;
@@ -19,6 +20,7 @@ class ProductModel {
     required this.id,
     required this.name,
     required this.price,
+    this.priceLarge,
     this.rating = 0,
     this.ratingCount = 0,
     this.imageUrl,
@@ -28,6 +30,19 @@ class ProductModel {
     this.categoryName,
     this.createdAt,
   });
+
+  /// Selisih bawaan Large terhadap Regular (rupiah). Harus sama dengan
+  /// DefaultLargeSurcharge di backend (internal/store/menu_pricing.go).
+  static const int defaultLargeSurcharge = 4000;
+
+  /// Harga Large; bila server belum mengirimnya memakai Regular + selisih bawaan.
+  int get largePrice => (priceLarge != null && priceLarge! > 0)
+      ? priceLarge!
+      : price + defaultLargeSurcharge;
+
+  /// Harga satuan sesuai ukuran. Ukuran selain "Large" dihargai Regular.
+  /// Angka ini hanya perkiraan tampilan; total akhir dihitung server.
+  int priceFor(String? size) => size == 'Large' ? largePrice : price;
 
   /// Minuman (kopi / non kopi) punya pilihan es, gula, dan ukuran.
   /// Dihitung dari nama kategori karena id kategori dari backend berupa slug
@@ -62,6 +77,9 @@ class ProductModel {
         fallback: 'Tanpa nama',
       ),
       price: JsonUtils.asInt(JsonUtils.pick(json, ['price', 'harga'])),
+      priceLarge: _parseNullableInt(
+        JsonUtils.pick(json, ['priceLarge', 'price_large', 'harga_large']),
+      ),
       rating: JsonUtils.asDouble(json['rating']),
       ratingCount: JsonUtils.asInt(
         JsonUtils.pick(json, ['rating_count', 'ratingCount', 'reviews']),
@@ -88,6 +106,9 @@ class ProductModel {
       ),
     );
   }
+
+  static int? _parseNullableInt(dynamic value) =>
+      value == null ? null : JsonUtils.asInt(value);
 
   static bool _parseAvailability(Map<String, dynamic> json) {
     final status = JsonUtils.asNullableString(json['status']);

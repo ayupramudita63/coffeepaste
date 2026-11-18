@@ -12,7 +12,7 @@ class CancellationPolicyNote extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Icon(
+        Icon(
           Icons.info_outline,
           size: 22,
           color: AppColors.textMuted,

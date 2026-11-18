@@ -2,12 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
+import '../../../core/theme/app_style.dart';
 
 class OptionItem {
   final String label;
   final List<List<dynamic>> icon;
 
-  const OptionItem({required this.label, required this.icon});
+  /// Teks kecil di bawah label, mis. harga pada pilihan ukuran.
+  final String? caption;
+
+  const OptionItem({required this.label, required this.icon, this.caption});
 }
 
 /// Widget pilihan tunggal (single-select) yang dipakai untuk
@@ -34,11 +38,7 @@ class OptionSelectorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.surfaceMuted),
-      ),
+      decoration: AppStyle.card(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -102,6 +102,17 @@ class OptionSelectorWidget extends StatelessWidget {
                               fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                             ),
                           ),
+                          if (option.caption != null)
+                            Text(
+                              option.caption!,
+                              textAlign: TextAlign.center,
+                              style: AppTextStyles.ratingText.copyWith(
+                                fontSize: 11,
+                                color: isSelected
+                                    ? Colors.white70
+                                    : AppColors.textPrimary.withOpacity(0.6),
+                              ),
+                            ),
                         ],
                       ),
                     ),

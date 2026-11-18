@@ -28,7 +28,9 @@ class HomeSectionHeader extends StatelessWidget {
               Text(
                 title,
                 style: AppTextStyles.sectionTitle.copyWith(
-                  fontSize: 16,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.3,
                 ),
               ),
               if (subtitle != null) ...[
@@ -36,7 +38,7 @@ class HomeSectionHeader extends StatelessWidget {
                 Text(
                   subtitle!,
                   style: AppTextStyles.greetingSubtitle.copyWith(
-                    fontSize: 11.5,
+                    fontSize: 12,
                   ),
                 ),
               ],
@@ -45,18 +47,18 @@ class HomeSectionHeader extends StatelessWidget {
         ),
         GestureDetector(
           onTap: onSeeAll,
+          behavior: HitTestBehavior.opaque,
           child: Row(
             children: [
               Text(
                 'Lihat Semua',
                 style: AppTextStyles.sectionAction.copyWith(
-                  fontSize: 12,
+                  fontSize: 13,
                 ),
               ),
-              const SizedBox(width: 3),
-              const Icon(
-                Icons.arrow_forward,
-                size: 13,
+              Icon(
+                Icons.chevron_right_rounded,
+                size: 20,
                 color: AppColors.primary,
               ),
             ],

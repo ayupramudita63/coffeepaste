@@ -1,15 +1,9 @@
 class ApiConfig {
   ApiConfig._();
 
-  /// Alamat backend Go (PORT di .env backend, default 8000). Ubah lewat:
-  /// flutter run --dart-define=API_BASE_URL=http://192.168.1.10:8000/api
-  ///
-  /// Default 10.0.2.2 = localhost komputer jika dijalankan di emulator Android.
-  /// HP fisik: pakai IP laptop di jaringan yang sama. Produksi (Railway):
-  /// --dart-define=API_BASE_URL=https://coffeepaste-production.up.railway.app/api
   static const String baseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://10.0.2.2:8000/api',
+    defaultValue: 'https://coffeepastebackendnew-production.up.railway.app/api',
   );
 
   static const Duration connectTimeout = Duration(seconds: 15);
@@ -18,12 +12,6 @@ class ApiConfig {
 
   static Uri get _baseUri => Uri.parse(baseUrl);
 
-  /// Mengubah path gambar dari backend menjadi URL yang bisa dimuat.
-  ///
-  /// - kosong            -> null
-  /// - assets/...        -> dibiarkan (gambar lokal)
-  /// - /uploads/a.jpg    -> http://host:port/uploads/a.jpg
-  /// - http://localhost  -> host diganti agar bisa diakses dari emulator/HP
   static String? resolveImageUrl(String? raw) {
     if (raw == null) return null;
     final value = raw.trim();

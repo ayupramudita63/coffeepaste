@@ -24,8 +24,7 @@ class OrderProductTile extends StatelessWidget {
     final hasVariant = item.variant != null && item.variant!.isNotEmpty;
 
     return Row(
-      crossAxisAlignment:
-          compact ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(compact ? 10 : 12),
@@ -49,6 +48,7 @@ class OrderProductTile extends StatelessWidget {
         SizedBox(width: compact ? 12 : 14),
         Expanded(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(

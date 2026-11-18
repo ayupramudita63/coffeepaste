@@ -88,7 +88,8 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
+      // Splash selalu hijau merek (logo & teks putih), di mode terang maupun gelap.
+      backgroundColor: AppColors.brand,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../core/theme/app_style.dart';
 
 /// Tab "Sedang Berlangsung" / "Riwayat" di halaman Pesanan.
 class OrderTabBar extends StatelessWidget {
@@ -18,11 +19,11 @@ class OrderTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 58,
-      padding: const EdgeInsets.all(4),
+      height: 48,
+      padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(30),
+        color: AppColors.inputBackground,
+        borderRadius: BorderRadius.circular(AppStyle.innerRadius),
       ),
       child: Row(
         children: [
@@ -59,17 +60,16 @@ class _OrderTab extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.primary.withOpacity(0.12)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(26),
+          color: isSelected ? AppColors.surface : Colors.transparent,
+          borderRadius: BorderRadius.circular(AppStyle.innerRadius - 3),
+          boxShadow: isSelected ? AppStyle.softShadow : const [],
         ),
         child: Text(
           title,
           textAlign: TextAlign.center,
           style: TextStyle(
             color: isSelected ? AppColors.primary : AppColors.textSecondary,
-            fontSize: 15,
+            fontSize: 14,
             fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
           ),
         ),

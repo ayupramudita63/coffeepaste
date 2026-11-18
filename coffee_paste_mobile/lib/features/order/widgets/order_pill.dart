@@ -10,14 +10,15 @@ class OrderPill extends StatelessWidget {
   final bool compact;
 
   /// Warna dasar; latar memakai warna ini dengan [opacity].
-  final Color color;
+  /// Kosong = warna utama aplikasi (mengikuti mode terang/gelap).
+  final Color? color;
   final double opacity;
 
   const OrderPill({
     super.key,
     required this.child,
     this.compact = false,
-    this.color = AppColors.primary,
+    this.color,
     this.opacity = 0.08,
   });
 
@@ -29,7 +30,7 @@ class OrderPill extends StatelessWidget {
         vertical: compact ? 7 : 8,
       ),
       decoration: BoxDecoration(
-        color: color.withOpacity(opacity),
+        color: (color ?? AppColors.primary).withOpacity(opacity),
         borderRadius: BorderRadius.circular(compact ? 18 : 20),
       ),
       child: child,
